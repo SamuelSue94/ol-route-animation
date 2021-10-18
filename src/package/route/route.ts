@@ -17,28 +17,43 @@ import carImg from "../../assets/car.png";
 /**
  * coordinate: 坐标点
  * time: 记录时间点
+ * overspeed: 1|0 是否超速
  */
 type GPSInfo = {
   coordinate: Coordinate;
   time: number;
+  overSpeed: Boolean;
 }
 
 export class RouteControl {
-  private olMap: Map;
-  private lineLayer: VectorLayer; // 轨迹线的层
-  private gpsInfo: GPSInfo[]; // GPS数据
-  private carFeature: Feature<Point>; // 车
+  private olMap: Map
+  private lineLayer: VectorLayer // 轨迹线的层
+  private gpsInfo: GPSInfo[] // GPS数据
+  private carFeature: Feature<Point> // 车
+  private _isPlaying = false  // 是否正在播放
+  private _playedTime = 0 // 当前播放进度(毫秒数)
 
+  // 所有的轨迹信息
   private get coords() {
-    return this.gpsInfo.map(item=>fromLonLat(item.coordinate));
+    return this.gpsInfo.map(item => fromLonLat(item.coordinate))
   }
 
-  constructor(olMap: Map, gpsInfo:GPSInfo[]){
-    this.olMap = olMap;
-    this.gpsInfo = gpsInfo;
-    this.lineLayer = this.initLayer();
-    this.initFullPath();
-    this.carFeature = this.initCar();
+  // 总时长(毫秒)
+  private get totalTime() {
+    return this.gpsInfo[this.gpsInfo.length - 1].time * 1000
+  }
+
+  // 每一段是否超速组成的数组
+  private get overSpeedArr() {
+    return this.gpsInfo.map(item => !!item.overSpeed)
+  }
+
+  constructor(olMap: Map, gpsInfo: GPSInfo[]) {
+    this.olMap = olMap
+    this.gpsInfo = gpsInfo
+    this.lineLayer = this.initLayer()
+    this.initFullPath()
+    this.carFeature = this.initCar()
   }
   /**
    * 初始化图层
@@ -47,8 +62,8 @@ export class RouteControl {
     const lineLayer = new VectorLayer({
       source: new VectorSource<LineString>()
     })
-    this.olMap.addLayer(lineLayer);
-    return lineLayer;
+    this.olMap.addLayer(lineLayer)
+    return lineLayer
   }
   /**
    * 全量的路径图
@@ -61,8 +76,8 @@ export class RouteControl {
         width: 8,
       }),
       zIndex: 0
-    }));
-    this.lineLayer.getSource().addFeature(fullPath);
+    }))
+    this.lineLayer.getSource().addFeature(fullPath)
   }
   /**
    * 初始化车
@@ -76,7 +91,7 @@ export class RouteControl {
       }),
       zIndex: 5
     }))
-    this.lineLayer.getSource().addFeature(car);
+    this.lineLayer.getSource().addFeature(car)
     return car
   }
 }
