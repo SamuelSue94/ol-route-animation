@@ -32,6 +32,8 @@ export class RouteControl {
   private gpsInfo: GPSInfo[] // GPS数据
   private carFeature: Feature<Point> // 车
   private _playedTime = 0 // 当前播放进度(毫秒数)
+  private greenLine: Feature<LineString> = new Feature(new LineString([]));
+  private redLines: (Feature<LineString>|null)[] = []; // 存放红线的数组
 
   // 所有的轨迹信息
   private get coords() {
@@ -89,8 +91,10 @@ export class RouteControl {
     }))
     this.olMap.getView().fit(line.getExtent(),{
       padding: [50,50,50,50]
-    });
+    })
     this.lineLayer.getSource().addFeature(fullPath)
+    this.greenLine.setStyle(RouteControl.genLineStyle(false))
+    this.lineLayer.getSource().addFeature(this.greenLine)
   }
   /**
    * 初始化车
@@ -117,6 +121,7 @@ export class RouteControl {
     this.carFeature.getGeometry()?.setCoordinates(currentCoordinate)
     const deg = RouteControl.calcDeg(sourceCoordinate, destCoordinate)
     this.carFeature.setStyle(RouteControl.genCarStyle(deg))
+    this.setLine(index,currentCoordinate)
   }
   /**
    * 根据播放时间(毫秒)来计算所处的第几段轨迹
@@ -127,6 +132,62 @@ export class RouteControl {
       index++
     }
     return [index, this.gpsInfo[index].time] as const
+  }
+
+  private setLine(index: number, curCoordinate: Coordinate) {
+    const routePath: Coordinate[] = [];
+    for (let i = 0; i <= index; i++) {
+      routePath.push((this.coords[i]));
+    }
+    routePath.push(curCoordinate);
+    this.greenLine.getGeometry()!.setCoordinates(routePath);
+    // 红线部分
+    if (this.redLines.length - 1 >= index) {
+      // 已经画过的部分
+      for (let i = index + 1; i < this.redLines.length; i++) {
+        this.redLines[i] &&
+        this.lineLayer
+          .getSource()
+          .removeFeature(this.redLines[i] as Feature<LineString>);
+      }
+      this.redLines = this.redLines.slice(0, index + 1);
+      const redLinePath = [this.coords[index], curCoordinate];
+      this.redLines[this.redLines.length - 1] &&
+      (this.redLines[this.redLines.length - 1] as Feature<LineString>)
+        .getGeometry()!
+        .setCoordinates(redLinePath);
+    } else {
+      // index指向的line还没画过
+      // 先补完当前线
+      const n = this.redLines.length;
+      const curLine = this.redLines[n - 1];
+      if (curLine) {
+        curLine
+          .getGeometry()!
+          .setCoordinates([
+            this.coords[n - 1],
+            this.coords[n]
+          ]);
+      }
+      // 补后续的红线
+      for (let i = n; i <= index; i++) {
+        if (this.overSpeedArr[i]) {
+          const redLine = new Feature<LineString>({
+            geometry: new LineString([this.coords[i]])
+          });
+          redLine.setStyle(RouteControl.genLineStyle(true));
+          this.redLines.push(redLine);
+          this.lineLayer.getSource().addFeature(redLine);
+          const curPath = [this.coords[i]];
+          curPath.push(
+            i === index ? curCoordinate : (this.coords[i + 1])
+          );
+          redLine.getGeometry()!.setCoordinates(curPath);
+        } else {
+          this.redLines.push(null);
+        }
+      }
+    }
   }
 
   /**
@@ -160,6 +221,23 @@ export class RouteControl {
       }),
       zIndex: 5
     })
+  }
+
+  /**
+   *
+   * 根据是否超速，返回线的样式
+   * @param {boolean} [isOverspeed]
+   */
+  private static genLineStyle(isOverspeed?: boolean) {
+    return new Style({
+      stroke: new Stroke({
+        color: isOverspeed ? '#ff4538':'#0dc86e',
+        width: 10,
+        lineCap: 'round',
+        lineJoin: 'round'
+      }),
+      zIndex: isOverspeed ? 3 : 2
+    });
   }
 
   /**

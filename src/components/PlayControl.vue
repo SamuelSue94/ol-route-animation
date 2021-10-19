@@ -27,7 +27,7 @@ const onChange = (value:number) => emit('update:playedTime',value)
       @click="togglePlayState"
     />
     <div class="slider-con">
-      <van-slider v-model="playedTime" :max="totalTime" step=16 @change=onChange></van-slider>
+      <van-slider v-model="playedTime" :max="totalTime" step=16 @update:model-value=onChange></van-slider>
     </div>
     <div class="time-con">
       <div class="time">{{formatTimeStr(playedTime)}}</div>/<div class="time">{{formatTimeStr(totalTime)}}</div>
