@@ -4,42 +4,48 @@
       114.56,
       30.66
     ],
-    "time": 0
+    "time": 0,
+    "overSpeed":0
   },
   {
     "coordinate": [
       114.66,
       30.66
     ],
-    "time": 10
+    "time": 10,
+    "overSpeed":1
   },
   {
     "coordinate": [
       114.66,
       30.63
     ],
-    "time": 20
+    "time": 20,
+    "overSpeed":0
   },
   {
     "coordinate": [
       114.67,
       30.63
     ],
-    "time": 30
+    "time": 30,
+    "overSpeed":0
   },
   {
     "coordinate": [
       114.67,
       30.65
     ],
-    "time": 40
+    "time": 40,
+    "overSpeed":1
   },
   {
     "coordinate": [
       114.62,
       30.63
     ],
-    "time": 50
+    "time": 50,
+    "overSpeed":1
   },
   {
     "coordinate": [
