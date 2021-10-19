@@ -14,7 +14,8 @@ const emit = defineEmits<{
 }>();
 
 // 切换播放/暂停的回调
-const togglePlayState = () => emit('update:playState', props.playState === PlayStatus.Playing ? PlayStatus.Pause : PlayStatus.Playing);
+const togglePlayState = () => emit('update:playState', props.playState === PlayStatus.Playing ? PlayStatus.Pause : PlayStatus.Playing)
+// 拖拽更新playedTime
 const onChange = (value:number) => emit('update:playedTime',value)
 </script>
 

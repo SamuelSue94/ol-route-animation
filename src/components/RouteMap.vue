@@ -15,10 +15,7 @@ onMounted(() => {
   const map = createMap('map')
   routeControl = new RouteControl(map, RouteData.map(item => ({ ...item, overSpeed: !!item.overSpeed })))
 })
-/* watch(() => props.playState, () => {
-  if (!routeControl) return;
-  routeControl.isPlaying = props.playState === PlayStatus.Playing;
-}) */
+
 watch(() => props.playedTime, () => {
   routeControl.playedTime = props.playedTime
 })
