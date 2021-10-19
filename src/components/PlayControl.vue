@@ -13,7 +13,9 @@ const emit = defineEmits<{
   (e: "update:playedTime", value: number): void;
 }>();
 
+// 切换播放/暂停的回调
 const togglePlayState = () => emit('update:playState', props.playState === PlayStatus.Playing ? PlayStatus.Pause : PlayStatus.Playing);
+const onChange = (value:number) => emit('update:playedTime',value)
 </script>
 
 <template>
@@ -25,7 +27,7 @@ const togglePlayState = () => emit('update:playState', props.playState === PlayS
       @click="togglePlayState"
     />
     <div class="slider-con">
-      <van-slider v-model="playedTime" :max="totalTime" step=16></van-slider>
+      <van-slider v-model="playedTime" :max="totalTime" step=16 @change=onChange></van-slider>
     </div>
     <div class="time-con">
       <div class="time">{{formatTimeStr(playedTime)}}</div>/<div class="time">{{formatTimeStr(totalTime)}}</div>

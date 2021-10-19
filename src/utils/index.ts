@@ -7,7 +7,7 @@ export const padNum = (num: number, length: number = 2) => {
 // 毫秒数格式化为xx:xx的字符串
 export const formatTimeStr = (time: number) => {
   const seconds = Math.floor(time / 1000);
-  if (seconds > 60) {
+  if (seconds >= 60) {
     const minutes = Math.floor(seconds / 60);
     const resSeconds = seconds % 60;
     return `${minutes > 10 ? minutes : padNum(minutes, 2)}` + ":" + `${resSeconds > 10 ? resSeconds : padNum(resSeconds)}`
