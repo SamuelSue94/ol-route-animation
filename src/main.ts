@@ -5,4 +5,4 @@ import { Slider, Icon } from 'vant';
 
 const app = createApp(App);
 app.use(Slider).use(Icon);
-app.mount('#app')
+app.mount('#app');

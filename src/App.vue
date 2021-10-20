@@ -12,16 +12,13 @@ const playState = ref<PlayStatus>(PlayStatus.Pause);
 // 播放时间
 const playedTime = ref(0);
 const startAnimate = () => {
-  playedTime.value += INTERVAL;
-  if (playState.value === PlayStatus.Playing) requestAnimationFrame(startAnimate)
+  playedTime.value = Math.min(totalTime, playedTime.value + INTERVAL)
+  if( playedTime.value === totalTime ) playState.value = PlayStatus.Playing
+  if (playState.value === PlayStatus.Playing ) requestAnimationFrame(startAnimate)
 }
 
 watch(playState, (newVal) => {
   if (newVal === PlayStatus.Playing) startAnimate()
-})
-
-watch(playedTime, (newVal) => {
-  console.log(newVal)
 })
 
 </script>
