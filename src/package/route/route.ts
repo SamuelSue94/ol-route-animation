@@ -246,17 +246,13 @@ export class RouteControl {
     const dx = coord2[0] - coord1[0]
     let radAngle = Math.atan(dy / dx)
     if (dy <= 0 && dx >= 0) {//第二象限
-      console.log('第二象限');
       radAngle = -radAngle;
     } else if (dx >= 0 && dy >= 0) {//第一象限
       radAngle = -radAngle;
-      console.log('第一象限');
     } else if (dx <= 0 && dy >= 0) {//第四象限
       radAngle = Math.PI - radAngle;
-      console.log('第四象限');
     } else if (dx <= 0 && dy <= 0) {//第三象限
       radAngle = Math.PI - radAngle;
-      console.log('第三象限');
     }
     return radAngle;
   }
