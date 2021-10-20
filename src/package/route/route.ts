@@ -23,7 +23,7 @@ import carImg from "../../assets/car.png";
 type GPSInfo = {
   coordinate: Coordinate;
   time: number;
-  overSpeed: Boolean;
+  overSpeed: number;
 }
 
 export class RouteControl {
