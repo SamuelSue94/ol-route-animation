@@ -1,4 +1,3 @@
-import { INTERVAL } from './../../config/index';
 import { Feature } from 'ol';
 import { Coordinate } from 'ol/coordinate';
 import LineString from 'ol/geom/LineString';
@@ -23,7 +22,7 @@ import carImg from "../../assets/car.png";
 type GPSInfo = {
   coordinate: Coordinate;
   time: number;
-  overSpeed: number;
+  overSpeed: Boolean;
 }
 
 export class RouteControl {
@@ -40,11 +39,6 @@ export class RouteControl {
     return this.gpsInfo.map(item => fromLonLat(item.coordinate))
   }
 
-  // 总时长(毫秒)
-  private get totalTime() {
-    return this.gpsInfo[this.gpsInfo.length - 1].time * 1000
-  }
-
   public get playedTime() {
     return this._playedTime
   }
@@ -55,7 +49,7 @@ export class RouteControl {
 
   // 每一段是否超速组成的数组
   private get overSpeedArr() {
-    return this.gpsInfo.map(item => !!item.overSpeed)
+    return this.gpsInfo.map(item => item.overSpeed)
   }
 
   constructor(olMap: Map, gpsInfo: GPSInfo[]) {
