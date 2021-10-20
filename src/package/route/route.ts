@@ -17,7 +17,7 @@ import carImg from "../../assets/car.png";
 /**
  * coordinate: 坐标点
  * time: 记录时间点
- * overspeed: 1|0 是否超速
+ * overspeed:  是否超速
  */
 type GPSInfo = {
   coordinate: Coordinate;
